@@ -29,7 +29,7 @@ export function Hero() {
       <Shell className="relative z-10">
         <div className="grid items-center gap-14 py-16 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16 lg:py-28">
           {/* ── the statement ──────────────────────────────────────────── */}
-          <div>
+          <div className="min-w-0">
             <Reveal>
               <div className="flex flex-wrap items-center gap-2">
                 <Status kind="live" label={`Live on ${CHAINS.length} chains`} />
@@ -82,8 +82,11 @@ export function Hero() {
             </Reveal>
 
             <Reveal delay={0.68}>
-              <div className="mt-6 flex items-center gap-3">
-                <div className="flex -space-x-2">
+              <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2">
+                {/* shrink-0 keeps the overlapped coin stack at its natural
+                    width — without it the row's wrapping text squeezes the
+                    marks into each other on a phone. */}
+                <div className="flex shrink-0 -space-x-2">
                   {MARKED_TOKENS.slice(0, 5).map((t) => {
                     const icon = tokenIcon(t)
                     return icon ? (
@@ -107,7 +110,7 @@ export function Hero() {
           </div>
 
           {/* ── the mechanism ──────────────────────────────────────────── */}
-          <Reveal delay={0.25} duration={1} y={28}>
+          <Reveal delay={0.25} duration={1} y={28} className="min-w-0">
             <PaymentDemo className="mx-auto w-full max-w-[26rem] lg:max-w-none" />
           </Reveal>
         </div>

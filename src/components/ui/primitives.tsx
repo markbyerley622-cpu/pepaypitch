@@ -9,7 +9,7 @@ import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { Reveal, WordReveal } from './motion'
 
-/* ─────────────────────────────────────────────────────────────── layout ─── */
+/* ------------------------------------------------------------------ layout */
 
 /**
  * The page gutter. Every full-width band renders its own <Shell> so background
@@ -160,7 +160,7 @@ export function SectionHead({
   )
 }
 
-/* ─────────────────────────────────────────────────────────────── atoms ──── */
+/* ------------------------------------------------------------------- atoms */
 
 export function Eyebrow({
   children,
@@ -285,7 +285,6 @@ export function TokenPill({
       )}
     >
       {icon ? (
-        // eslint-disable-next-line @next/next/no-img-element
         <img src={icon} alt="" aria-hidden className="h-4 w-4 rounded-full object-contain" />
       ) : (
         <span
@@ -318,7 +317,7 @@ export function WalletChip({ address, className }: { address: string; className?
   )
 }
 
-/* ──────────────────────────────────────────────────────────── surfaces ──── */
+/* ---------------------------------------------------------------- surfaces */
 
 type CardProps<T extends ElementType> = {
   as?: T
@@ -372,7 +371,9 @@ export function GlassCard({
   sheen?: boolean
 }) {
   return (
-    <div className={cn('relative overflow-hidden rounded-2xl pep-glass', sheen && 'pep-sheen', className)}>
+    <div
+      className={cn('relative overflow-hidden rounded-2xl pep-glass', sheen && 'pep-sheen', className)}
+    >
       <div className="relative z-10">{children}</div>
     </div>
   )
@@ -390,7 +391,7 @@ export function Rule({ className }: { className?: string }) {
   return <div aria-hidden className={cn('pep-rule h-px w-full', className)} />
 }
 
-/* ───────────────────────────────────────────────────────────── controls ─── */
+/* ---------------------------------------------------------------- controls */
 
 /**
  * The site's only two button weights.

@@ -5,9 +5,9 @@
  *
  * The brief this site is built against asks the page to demonstrate the product
  * rather than describe it, so the hero carries a working checkout rather than a
- * screenshot of one. It runs the same five stages the real lifecycle does —
- * request, pay, route, settle, reconcile — against the tokens and chains that
- * actually carry volume in the ledger.
+ * screenshot of one. It runs the same stages the real lifecycle does — request,
+ * detect, route, settle — against the tokens and chains that actually carry
+ * volume in the ledger.
  *
  * It is a simulation and it says so, once, in the caption. Presenting an
  * animation as a live feed would be the exact kind of fake dashboard the brief
@@ -76,15 +76,13 @@ export function PaymentDemo({ className }: { className?: string }) {
   return (
     <div className={cn('relative', className)}>
       <div className="pep-card-3 relative overflow-hidden rounded-2xl">
-        {/* ── header ───────────────────────────────────────────────────── */}
+        {/* header */}
         <div className="flex items-center justify-between gap-4 border-b border-hairline px-5 py-3.5">
-          <div className="flex items-center gap-2">
-            <span className="pep-mono text-[0.7rem] text-ink-4">INV-1048</span>
-          </div>
+          <span className="pep-mono text-[0.7rem] text-ink-4">INV-1048</span>
           <StageChip stage={stage} />
         </div>
 
-        {/* ── amount ───────────────────────────────────────────────────── */}
+        {/* amount */}
         <div className="px-5 pb-1 pt-6">
           <span className="pep-eyebrow text-ink-4">Amount due</span>
           <div className="pep-num pep-text-fade mt-2 text-[2.6rem] font-bold leading-none">
@@ -95,7 +93,7 @@ export function PaymentDemo({ className }: { className?: string }) {
           </p>
         </div>
 
-        {/* ── the payer's token ────────────────────────────────────────── */}
+        {/* the payer's token */}
         <div className="px-5 pt-5">
           <span className="pep-eyebrow text-ink-4">Paid with</span>
           <motion.div
@@ -105,8 +103,12 @@ export function PaymentDemo({ className }: { className?: string }) {
             transition={{ duration: 0.5, ease: EASE }}
             className="mt-2.5 flex items-center gap-3 rounded-xl border border-hairline bg-surface-2 px-3.5 py-3"
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={payer.icon} alt="" aria-hidden className="h-7 w-7 rounded-full object-contain" />
+            <img
+              src={payer.icon}
+              alt=""
+              aria-hidden
+              className="h-7 w-7 shrink-0 rounded-full object-contain"
+            />
             <div className="min-w-0">
               <div className="pep-num text-[0.95rem] font-semibold text-ink">
                 {payer.amount} {payer.symbol}
@@ -117,12 +119,12 @@ export function PaymentDemo({ className }: { className?: string }) {
           </motion.div>
         </div>
 
-        {/* ── the rail ─────────────────────────────────────────────────── */}
+        {/* the rail */}
         <div className="px-5 pb-5 pt-6">
           <Rail idx={idx} still={!!still} />
         </div>
 
-        {/* ── settlement ───────────────────────────────────────────────── */}
+        {/* settlement */}
         <div className="border-t border-hairline bg-surface-2/60 px-5 py-4">
           <motion.div
             animate={{ opacity: stage === 'settled' ? 1 : 0.35 }}
@@ -154,7 +156,7 @@ export function PaymentDemo({ className }: { className?: string }) {
   )
 }
 
-/* ─────────────────────────────────────────────────────────────── pieces ─── */
+/* ------------------------------------------------------------------ pieces */
 
 function StageChip({ stage }: { stage: Stage }) {
   const live = stage === 'settled'
@@ -163,7 +165,9 @@ function StageChip({ stage }: { stage: Stage }) {
       className={cn(
         'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1',
         'text-[10px] font-semibold uppercase leading-none tracking-[0.13em] transition-colors duration-500',
-        live ? 'border-live/35 bg-live/10 text-live' : 'border-pep-500/30 bg-pep-500/10 text-pep-600 dark:text-pep-300'
+        live
+          ? 'border-live/35 bg-live/10 text-live'
+          : 'border-pep-500/30 bg-pep-500/10 text-pep-600 dark:text-pep-300'
       )}
     >
       <span className="relative flex h-1.5 w-1.5">
@@ -191,29 +195,26 @@ function Rail({ idx, still }: { idx: number; still: boolean }) {
   return (
     <div>
       <div className="relative flex items-center justify-between">
-        {/* track */}
-        <div aria-hidden className="absolute inset-x-3 top-[7px] h-px bg-hairline-2" />
+        <div aria-hidden className="absolute inset-x-2 top-[7px] h-px bg-hairline-2" />
         <motion.div
           aria-hidden
-          className="absolute left-3 top-[7px] h-px origin-left bg-accent2"
-          style={{ right: '0.75rem' }}
+          className="absolute left-2 right-2 top-[7px] h-px origin-left bg-accent2"
           animate={{ scaleX: idx / (nodes.length - 1) }}
           transition={{ duration: still ? 0 : 0.7, ease: EASE }}
         />
 
         {nodes.map((n, i) => (
-          <div key={n} className="relative z-10 flex flex-col items-center gap-2" style={{ width: 0 }}>
-            <span
-              className={cn(
-                'h-[15px] w-[15px] rounded-full border-2 bg-canvas transition-colors duration-500',
-                i <= idx ? 'border-accent2' : 'border-hairline-2'
-              )}
-            >
-              {i <= idx ? (
-                <span className="block h-full w-full scale-[0.45] rounded-full bg-accent2" />
-              ) : null}
-            </span>
-          </div>
+          <span
+            key={n}
+            className={cn(
+              'relative z-10 h-[15px] w-[15px] rounded-full border-2 bg-canvas transition-colors duration-500',
+              i <= idx ? 'border-accent2' : 'border-hairline-2'
+            )}
+          >
+            {i <= idx ? (
+              <span className="block h-full w-full scale-[0.45] rounded-full bg-accent2" />
+            ) : null}
+          </span>
         ))}
       </div>
 

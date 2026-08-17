@@ -53,11 +53,22 @@ export function AreaChart({
   data,
   height = 160,
   strokeWidth = 2,
+  fill = false,
   className,
 }: {
   data: number[]
   height?: number
   strokeWidth?: number
+  /**
+   * Stretch to the height of the parent instead of `height`.
+   *
+   * `height` still drives the path maths — it is the viewBox's coordinate
+   * space — but `preserveAspectRatio="none"` means the drawn result scales to
+   * whatever CSS height it ends up with. Used where the card is stretched by a
+   * taller neighbour in the same grid row, so the chart takes up the slack
+   * rather than leaving a block of dead space under it.
+   */
+  fill?: boolean
   className?: string
 }) {
   const id = useId()
@@ -68,8 +79,8 @@ export function AreaChart({
     <svg
       viewBox={`0 0 ${W} ${height}`}
       preserveAspectRatio="none"
-      className={cn('w-full', className)}
-      style={{ height }}
+      className={cn('w-full', fill && 'h-full', className)}
+      style={fill ? undefined : { height }}
       role="img"
       aria-label={`${data.length} data points, trending from ${Math.round(data[0] ?? 0)} to ${Math.round(data[data.length - 1] ?? 0)}`}
     >

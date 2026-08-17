@@ -36,7 +36,18 @@ const rise = {
   show: { opacity: 1, y: 0, filter: 'blur(0px)' },
 }
 
-/** One-off scroll reveal. */
+/**
+ * One-off scroll reveal.
+ *
+ * ── ON REDUCED MOTION ───────────────────────────────────────────────────────
+ * Every primitive in this file keeps the *same* rendered tree whether motion is
+ * allowed or not, and only varies the animation props. That is not a style
+ * preference — the server has no access to `prefers-reduced-motion`, so a
+ * component that returns a different element (or different text) when motion is
+ * off will not match what the server sent, and React discards the whole subtree
+ * on hydration. Returning `initial={false}` disables the animation without
+ * touching the markup.
+ */
 export function Reveal({
   children,
   className,
@@ -57,13 +68,11 @@ export function Reveal({
   const still = useReducedMotion()
   const M = motion[as]
 
-  if (still) return <M className={className}>{children}</M>
-
   return (
     <M
       className={className}
-      initial={{ opacity: 0, y, filter: `blur(${blur}px)` }}
-      whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      initial={still ? false : { opacity: 0, y, filter: `blur(${blur}px)` }}
+      whileInView={still ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
       viewport={VIEWPORT}
       transition={{ delay, duration, ease: EASE }}
     >
@@ -94,13 +103,15 @@ export function WordReveal({
   const still = useReducedMotion()
   const words = text.split(' ')
 
-  if (still) return <span className={className}>{text}</span>
-
+  // The word spans are rendered in both cases. Collapsing to a single text node
+  // when motion is off would change the text content of this element between
+  // server and client, which is precisely the mismatch React refuses to
+  // reconcile — the headline would blank out for reduced-motion readers.
   return (
     <motion.span
       className={cn('inline-block', className)}
-      initial="hidden"
-      whileInView="show"
+      initial={still ? false : 'hidden'}
+      whileInView={still ? undefined : 'show'}
       viewport={VIEWPORT}
       variants={{ show: { transition: { staggerChildren: stagger, delayChildren: delay } } }}
       aria-label={text}
@@ -115,10 +126,14 @@ export function WordReveal({
         >
           <motion.span
             className="inline-block"
-            variants={{
-              hidden: { y: '110%', opacity: 0 },
-              show: { y: '0%', opacity: 1 },
-            }}
+            variants={
+              still
+                ? undefined
+                : {
+                    hidden: { y: '110%', opacity: 0 },
+                    show: { y: '0%', opacity: 1 },
+                  }
+            }
             transition={{ duration: 0.85, ease: EASE }}
           >
             {word}
@@ -149,15 +164,13 @@ export function MaskReveal({
   from?: 'bottom' | 'left'
 }) {
   const still = useReducedMotion()
-  if (still) return <div className={className}>{children}</div>
-
   const hidden = from === 'bottom' ? 'inset(100% 0% 0% 0%)' : 'inset(0% 100% 0% 0%)'
 
   return (
     <motion.div
       className={className}
-      initial={{ clipPath: hidden, opacity: 0 }}
-      whileInView={{ clipPath: 'inset(0% 0% 0% 0%)', opacity: 1 }}
+      initial={still ? false : { clipPath: hidden, opacity: 0 }}
+      whileInView={still ? undefined : { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1 }}
       viewport={VIEWPORT}
       transition={{ duration, ease: EASE, delay, opacity: { duration: 0.4, delay } }}
     >
@@ -217,8 +230,8 @@ export function Magnetic({
     }
   }, [mx, my, strength, max, still])
 
-  if (still) return <span className={className}>{children}</span>
-
+  // The listener above bails out on reduced motion, so the springs simply never
+  // leave zero — no need to render a different element to hold them still.
   return (
     <motion.span ref={ref} style={{ x, y }} className={cn('inline-block', className)}>
       {children}
@@ -319,8 +332,6 @@ export function Parallax({
     }
   }, [depth, mx, my, still])
 
-  if (still) return <div className={className}>{children}</div>
-
   return (
     <motion.div ref={ref} style={{ x, y }} className={cn('pep-gpu', className)}>
       {children}
@@ -374,8 +385,6 @@ export function Tilt({
     }
   }, [px, py, still])
 
-  if (still) return <div className={className}>{children}</div>
-
   return (
     <motion.div
       ref={ref}
@@ -406,9 +415,7 @@ export function Drift({
     target: ref,
     offset: ['start end', 'end start'],
   })
-  const y = useTransform(scrollYProgress, [0, 1], [range, -range])
-
-  if (still) return <div className={className}>{children}</div>
+  const y = useTransform(scrollYProgress, [0, 1], [still ? 0 : range, still ? 0 : -range])
 
   return (
     <div ref={ref} className={className}>

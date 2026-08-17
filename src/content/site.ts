@@ -500,14 +500,14 @@ app.post('/webhooks/pepay', (req, res) => {
  * because a developer will check them.
  * @see https://docs.pepay.io/developers/pepay-api
  */
-export const API_FACTS = [
+export const API_FACTS: { label: string; value: string; mono?: boolean }[] = [
   { label: 'Base URL', value: 'api.pepay.io', mono: true },
   { label: 'Auth', value: 'x-api-key header', mono: true },
   { label: 'Invoice range', value: '$0.01 – $1,000,000' },
   { label: 'Rate limit', value: '100 req / min per key' },
   { label: 'Idempotency', value: 'Idempotency-Key header', mono: true },
   { label: 'Webhook retries', value: '3, exponential backoff' },
-] as const
+]
 
 /** The four events a webhook endpoint receives. */
 export const WEBHOOK_EVENTS = [
