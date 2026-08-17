@@ -90,7 +90,21 @@ export const tokenIcon = (symbol: string): string | undefined => TOKEN_ICON[symb
  * undoes the credibility the whole row is there to build. The full list still
  * appears as a count.
  */
-export const MARKED_TOKENS = TPV.accepted.filter((a) => TOKEN_ICON[a.name]).map((a) => a.name)
+export const MARKED_TOKENS = (() => {
+  // Deduplicated by mark, not by symbol. BNB and WBNB are different tokens in
+  // the ledger but ship the same logo, so an overlapping coin row rendered the
+  // identical circle twice — which reads as a duplication bug rather than as
+  // two assets. The count beside the row still reflects every accepted token.
+  const seen = new Set<string>()
+  return TPV.accepted
+    .filter((a) => {
+      const icon = TOKEN_ICON[a.name]
+      if (!icon || seen.has(icon)) return false
+      seen.add(icon)
+      return true
+    })
+    .map((a) => a.name)
+})()
 
 /** Distinct tokens accepted, for the "accept anything" claim. */
 export const ACCEPTED_TOKENS = TPV.accepted.map((a) => ({

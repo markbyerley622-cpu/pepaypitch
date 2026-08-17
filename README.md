@@ -47,6 +47,38 @@ for novelty.
 
 ---
 
+## The audit question — read this first
+
+**Pepay is not currently audited by CertiK, and this site does not say it is.**
+
+Every primary source in the estate says the engagement is queued:
+
+| Source | Says |
+|---|---|
+| `bnb-pay/README.md` | "Core contracts are **queued** with CertiK (links added post-delivery)" |
+| `bnb-pay/README.md` | "Core contracts **will be** audited by CertiK. Links will be added when complete." |
+| `bnb-pay/SPEC.md` | lists "Professional audit (CertiK, Trail of Bits, or equivalent)" as future work |
+| `virtualproduct/src/deck.config.ts` | `AUDIT_HREF = undefined`, with a note that the badge reads "Audited by" *on instruction* and must be reverted if unsigned |
+
+`pepay-streams/audit/` is real and is used on the site — but it is **self-run
+static analysis** (Slither 0.11.3, Semgrep 1.143.0), not a third-party audit.
+Those are different claims and the site does not conflate them.
+
+**To publish the audit**, set one constant in `src/content/site.ts`:
+
+```ts
+export const AUDIT = {
+  firm: 'CertiK',
+  href: 'https://skynet.certik.com/projects/…',   // ← the report URL
+}
+```
+
+That flips the security card to `live`, changes the copy to "Completed", and
+renders a linked **Audited by CertiK** badge. No prose needs editing anywhere —
+which is the point: the claim cannot drift out of step with reality.
+
+---
+
 ## Claim discipline
 
 This is the part that matters most, and it is enforced structurally rather than
@@ -126,6 +158,22 @@ down renders its labels at about five pixels.
 **Media is lazy and pre-compressed.** Videos withhold their `src` until an
 observer says they are close, carry poster frames, and use phone-sized encodes
 where one exists. No re-encoding was needed; the dashboard had already done it.
+
+**Two recordings were pulled rather than shipped.** `payouts.mp4` carried a line
+reading *"Streamflow has been audited by 4 major auditors"* — stale boilerplate
+from a different protocol, still sitting in the Streams UI — plus a *"Stake
+$PEPAY for rewards up to 15% APY"* promo banner. `airdrop-create.mp4` carried the
+same APY banner and a devnet notice. Both are scrolling captures, so a fixed
+crop could not remove the text and neither clip had a clean segment. An audit
+claim this site explicitly disclaims, and a yield promise it makes nowhere else,
+do not ship because the footage was convenient. Payroll is carried by the
+duration diagram instead, which is clearer than the recording was.
+
+**Content never imports components.** `content/site.ts` takes `StatusKind` from
+`lib/status`, not from the UI barrel. That edge closes a cycle
+(content → ui/index → primitives → motion) which runs through a `'use client'`
+boundary and corrupts the RSC client manifest at prerender — it failed the build
+with a misleading "Could not find the module … in the React Client Manifest".
 
 Verified at 1440 / 1280 / 1024 / 768 / 390 in both themes: no console errors, no
 hydration errors, no horizontal overflow.

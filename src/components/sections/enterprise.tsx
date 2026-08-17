@@ -1,73 +1,79 @@
-import { ENTERPRISE, LIMITS } from '@/content/site'
+import { ENTERPRISE } from '@/content/site'
 import { Item, Reveal, Section, SectionHead, Stagger } from '@/components/ui'
 
 /**
- * Enterprise, and the limits that come with it.
+ * Enterprise, framed as control.
  *
- * Two halves, deliberately adjacent. The first is what a company gets; the
- * second is what Pepay does not have. Putting them in the same band rather than
- * burying the caveats in a footer is the whole design of this section — a buyer
- * doing diligence will find these facts anyway, and finding them stated is a
- * very different experience from finding them omitted.
+ * A company evaluating a payment rail is not asking "what features are there".
+ * It is asking five questions about authority: who can spend, what will be
+ * accepted, where money lands, what happened, and who did it. The section is
+ * built around those questions, with the shipped capability as the answer —
+ * which is a stronger frame than a fourth grid of four cards.
  *
- * There are no compliance, licensing or certification claims here, because
- * Pepay holds none.
+ * The limits that used to sit here now live in the security band, next to the
+ * posture they qualify.
  */
+
+const QUESTIONS = [
+  'Who can spend',
+  'What can be accepted',
+  'Where money settles',
+  'What happened',
+  'Who did it',
+] as const
+
 export function Enterprise() {
   return (
     <Section id="enterprise" tone="raised" space="default">
-      <SectionHead
-        eyebrow="Enterprise"
-        title="Controls, reconciliation and an audit trail"
-        support="Everything below maps to a shipped endpoint and a route in the dashboard. If it is not built, it is in the roadmap section instead."
-      />
+      <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+        <div className="min-w-0">
+          <SectionHead
+            eyebrow="Enterprise"
+            title="Five questions, answered in the product"
+            support="Everything below maps to a shipped endpoint and a route in the dashboard. There are no compliance, licensing or certification claims here, because Pepay holds none."
+          />
 
-      <Stagger className="mt-14 grid gap-4 sm:grid-cols-2" gap={0.08}>
-        {ENTERPRISE.map((e) => (
-          <Item key={e.title} className="h-full">
-            <div className="pep-card-2 flex h-full flex-col rounded-2xl p-6 sm:p-7">
-              <h3 className="text-[1.1rem] font-semibold text-ink">{e.title}</h3>
-              <p className="pep-pretty mt-2.5 text-[0.88rem] leading-relaxed text-ink-3">
-                {e.detail}
-              </p>
-              <ul className="mt-5 flex flex-wrap gap-1.5">
-                {e.items.map((it) => (
-                  <li
-                    key={it}
-                    className="rounded-md border border-hairline bg-surface-2 px-2 py-1 text-[0.7rem] font-medium text-ink-3"
-                  >
-                    {it}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Item>
-        ))}
-      </Stagger>
+          {/* The questions, set large. They are the section's argument — the
+              capability list opposite is only the answer sheet. */}
+          <Stagger className="mt-12 flex flex-col" gap={0.08}>
+            {QUESTIONS.map((q, i) => (
+              <Item key={q}>
+                <div className="flex items-baseline gap-4 border-t border-hairline py-4">
+                  <span className="pep-mono shrink-0 text-[0.72rem] text-accent2">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="pep-display text-[clamp(1.15rem,2vw,1.5rem)] text-ink">
+                    {q}
+                  </span>
+                </div>
+              </Item>
+            ))}
+          </Stagger>
+        </div>
 
-      {/* ── what Pepay does not have ────────────────────────────────────── */}
-      <Reveal delay={0.15}>
-        <div className="mt-16 rounded-2xl border border-hairline bg-surface/50 p-7 sm:p-9">
-          <h3 className="text-[1.15rem] font-semibold text-ink">
-            What Pepay does not have yet
-          </h3>
-          <p className="pep-pretty mt-2 max-w-[62ch] text-[0.88rem] leading-relaxed text-ink-3">
-            Stated here rather than discovered in diligence. Anything below is the reason to take
-            the rest of this page seriously.
-          </p>
-
-          <dl className="mt-8 grid gap-x-10 gap-y-6 sm:grid-cols-2">
-            {LIMITS.map((l) => (
-              <div key={l.claim} className="border-t border-hairline pt-4">
-                <dt className="text-[0.9rem] font-semibold text-ink-2">{l.claim}</dt>
-                <dd className="pep-pretty mt-1.5 text-[0.85rem] leading-relaxed text-ink-4">
-                  {l.reality}
-                </dd>
+        <Reveal delay={0.15} className="min-w-0">
+          <div className="grid gap-px overflow-hidden rounded-2xl border border-hairline bg-hairline sm:grid-cols-2">
+            {ENTERPRISE.map((e) => (
+              <div key={e.title} className="flex flex-col bg-surface p-6">
+                <h3 className="text-[1.02rem] font-semibold text-ink">{e.title}</h3>
+                <p className="pep-pretty mt-2 flex-1 text-[0.85rem] leading-relaxed text-ink-3">
+                  {e.detail}
+                </p>
+                <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {e.items.map((it) => (
+                    <li
+                      key={it}
+                      className="rounded-md border border-hairline bg-surface-2 px-2 py-0.5 text-[0.68rem] font-medium text-ink-4"
+                    >
+                      {it}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
-          </dl>
-        </div>
-      </Reveal>
+          </div>
+        </Reveal>
+      </div>
     </Section>
   )
 }

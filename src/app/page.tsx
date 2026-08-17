@@ -9,6 +9,7 @@ import { Streams } from '@/components/sections/streams'
 import { Agents } from '@/components/sections/agents'
 import { Developers } from '@/components/sections/developers'
 import { Proof } from '@/components/sections/proof'
+import { Security } from '@/components/sections/security'
 import { Enterprise } from '@/components/sections/enterprise'
 import { Apps } from '@/components/sections/apps'
 import { Roadmap } from '@/components/sections/roadmap'
@@ -29,7 +30,8 @@ import { Cta } from '@/components/sections/cta'
  *   Agents      Why does it matter?    — the case that compounds
  *   Developers  Can I build with it?
  *   Proof       Is any of this real?   — the ledger, after the claims
- *   Enterprise  Can my company use it? — and what is missing
+ *   Security    Can I trust it?        — and what we will not claim
+ *   Enterprise  Can my company use it?
  *   Apps        Who else is on it?
  *   Roadmap     What is next?
  *   Cta         What do I do now?
@@ -55,6 +57,7 @@ export default function HomePage() {
         <Agents />
         <Developers />
         <Proof />
+        <Security />
         <Enterprise />
         <Apps />
         <Roadmap />

@@ -7,6 +7,7 @@
  */
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { STATUS_LABEL, type StatusKind } from '@/lib/status'
 import { Reveal, WordReveal } from './motion'
 
 /* ------------------------------------------------------------------ layout */
@@ -214,14 +215,6 @@ export function Badge({
  * of ad-hoc copy — and only `live` gets a moving dot, because the thing that
  * actually exists is the only thing allowed to look active.
  */
-export type StatusKind = 'live' | 'soon' | 'vision'
-
-const STATUS_LABEL: Record<StatusKind, string> = {
-  live: 'Live',
-  soon: 'Coming',
-  vision: 'Vision',
-}
-
 export function Status({
   kind,
   label,

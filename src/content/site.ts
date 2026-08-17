@@ -20,7 +20,9 @@
  *   pepay.io                            — positioning
  *   merchant dashboard openapi.json     — the shipped API surface
  */
-import type { StatusKind } from '@/components/ui'
+// From lib, not from the component barrel: content importing components closes
+// a cycle through a 'use client' boundary and breaks the RSC manifest.
+import type { StatusKind } from '@/lib/status'
 
 /* ──────────────────────────────────────────────────────────────── brand ─── */
 
@@ -38,9 +40,22 @@ export const BRAND = {
    * stablecoin the merchant asked for.
    */
   headline: 'Any token in.\nOne stablecoin out.',
-  /** Two lines, not five — the audience list is split off the headline. */
+  /**
+   * The category, set above the headline.
+   *
+   * The headline states the mechanism, which is the memorable half but not the
+   * orienting one. A reader who has never heard of Pepay needs to be told what
+   * kind of company this is before the clever line lands.
+   */
+  eyebrow: 'Payment infrastructure for the on-chain economy',
+  /**
+   * Compressed from three clauses to two. The original also carried "across EVM
+   * and Solana" and "reconcile it all from one ledger" — both true, both now
+   * shown by the rail diagram and the proof section rather than asserted here.
+   * If a visual can communicate it, the hero does not spend a line on it.
+   */
   support:
-    'Payment infrastructure for people, businesses and AI agents. Accept any token across EVM and Solana, settle in the stablecoin you asked for, and reconcile it all from one ledger.',
+    'People, businesses and autonomous software pay with whatever they already hold. You settle in the stablecoin you chose.',
   /** Used for <title>, OG and the meta description. */
   metaTitle: 'Pepay — Open payment infrastructure for the agentic economy',
   metaDescription:
@@ -336,14 +351,27 @@ export const APPS: App[] = [
  * UI build. Streams is demonstrable but not launched, which is why the section
  * is marked Coming and never Live.
  */
+/**
+ * ── ON THE TWO CHAPTERS THAT ARE NOT HERE ───────────────────────────────────
+ *
+ * The captures for `payouts` and `airdrop-create` were pulled rather than
+ * shipped. Both carried copy that cannot appear on this site:
+ *
+ *   • payouts        — a line reading "Streamflow has been audited by 4 major
+ *                      auditors" (stale boilerplate from a different protocol,
+ *                      still sitting in the Streams UI), plus a promotional
+ *                      "Stake $PEPAY for rewards up to 15% APY" banner.
+ *   • airdrop-create — the same APY banner, plus a "Devnet version" notice.
+ *
+ * A fixed crop could not remove them: both are scrolling captures, so the text
+ * moves through the frame, and neither clip has a clean segment. An audit claim
+ * this site explicitly disclaims, and a yield promise it makes nowhere else,
+ * are not things to ship because the footage was convenient.
+ *
+ * Payroll — the flagship idea — is carried by the duration diagram at the top
+ * of the section instead, which is clearer than the recording was.
+ */
 export const STREAM_CHAPTERS = [
-  {
-    id: 'payouts',
-    label: 'Payouts',
-    caption: 'Recurring payroll, streamed per second',
-    video: '/streams/payouts.mp4',
-    poster: '/streams/poster/payouts.jpg',
-  },
   {
     id: 'vesting',
     label: 'Vesting',
@@ -366,13 +394,6 @@ export const STREAM_CHAPTERS = [
     poster: '/streams/poster/staking.jpg',
   },
   {
-    id: 'airdrop',
-    label: 'Airdrops',
-    caption: 'Bulk distribution in one transaction',
-    video: '/streams/airdrop-create.mp4',
-    poster: '/streams/poster/airdrop-create.jpg',
-  },
-  {
     id: 'claim',
     label: 'Claim',
     caption: 'Recipients claim without a support ticket',
@@ -380,6 +401,9 @@ export const STREAM_CHAPTERS = [
     poster: '/streams/poster/airdrop-done.jpg',
   },
 ] as const
+
+/** What a stream is, as five things it can be. Drives the duration diagram. */
+export const STREAM_USES = ['Payroll', 'Vesting', 'Locks', 'Staking', 'Airdrops'] as const
 
 /* ───────────────────────────────────────────────────────────────── agents ── */
 
@@ -570,28 +594,101 @@ export const ENTERPRISE = [
   },
 ] as const
 
+/* ──────────────────────────────────────────────────────────────── security ── */
+
+/**
+ * The audit position — the single most consequential claim on this site.
+ *
+ * ⚠️ READ BEFORE CHANGING. Every primary source in the Pepay estate says the
+ * CertiK engagement is *queued*, not delivered:
+ *
+ *   bnb-pay/README.md      "Core contracts are queued with CertiK
+ *                           (links added post-delivery)."
+ *   bnb-pay/README.md      "Core contracts will be audited by CertiK.
+ *                           Links will be added when complete."
+ *   bnb-pay/SPEC.md        lists "Professional audit (CertiK, Trail of Bits,
+ *                           or equivalent)" as future work.
+ *   virtualproduct         `AUDIT_HREF` is undefined, with a note that the
+ *                           badge reads "Audited by" on instruction and must
+ *                           be reverted if the report is not signed off.
+ *
+ * `pepay-streams/audit/` is real and worth showing, but it is *self-run static
+ * analysis* — Slither and Semgrep — not a third-party audit. The two are
+ * different claims and this site does not conflate them.
+ *
+ * TO PUBLISH THE AUDIT: set `href` to the report URL. `status` flips to 'live',
+ * the badge becomes "Audited by CertiK" and links out everywhere it appears.
+ * That is the only change required — do not hand-edit the copy instead.
+ */
+export const AUDIT = {
+  firm: 'CertiK',
+  /** The published report. Undefined until a signed-off report exists. */
+  href: undefined as string | undefined,
+} as const
+
+export const AUDIT_DELIVERED = AUDIT.href !== undefined
+
+/**
+ * What is actually true about the security posture today.
+ *
+ * Every line here is verifiable from the repos: the analysis run and its
+ * versions come from `pepay-streams/audit/pepay_audit_report.json`, the
+ * licence from LICENSE, and the custody model from the router/registry design.
+ */
+export const SECURITY = [
+  {
+    title: 'Non-custodial by construction',
+    detail:
+      'No Pepay contract holds your funds. The router settles and the registry records — there is no balance for us to lose.',
+    status: 'live' as StatusKind,
+  },
+  {
+    title: 'Static analysis, clean',
+    detail:
+      'Slither 0.11.3 and Semgrep 1.143.0 across the contract sources. Zero critical, high, medium or low findings outstanding at the last run.',
+    status: 'live' as StatusKind,
+  },
+  {
+    title: 'Open source, MIT',
+    detail:
+      'Contracts, SDK and the x402 Flex specification are public. You can read what settles your money before you route any through it.',
+    status: 'live' as StatusKind,
+  },
+  {
+    title: `Third-party audit with ${AUDIT.firm}`,
+    detail: AUDIT_DELIVERED
+      ? 'Completed. The full report is published and linked from this page.'
+      : 'Engaged and queued. No report is signed off yet, so this site does not claim one — the badge goes up the day it lands.',
+    status: (AUDIT_DELIVERED ? 'live' : 'soon') as StatusKind,
+  },
+]
+
 /**
  * The limits, stated by us rather than discovered by a buyer's diligence.
  * Volunteering these is what makes the rest of the page credible.
  */
 export const LIMITS = [
   {
-    claim: 'Security audit',
-    reality: 'Core contracts are queued with CertiK. No completed audit report is published yet.',
+    claim: 'Third-party audit',
+    short: 'Queued',
+    reality: `Contracts are engaged with ${AUDIT.firm} and queued. No signed-off report exists yet, so we do not display a badge.`,
   },
   {
-    claim: 'Streams contracts',
-    reality: 'Deployed and demonstrable on BSC testnet. Not on mainnet.',
+    claim: 'Streams',
+    short: 'Testnet',
+    reality: 'Contracts are deployed and demonstrable on BSC testnet. Not on mainnet.',
   },
   {
-    claim: 'Fiat and banking',
+    claim: 'Banking',
+    short: 'Not a bank',
     reality:
-      'Pepay holds no banking licence, no bank accounts and no live fiat rails. On- and off-ramps are direction, not product.',
+      'No banking licence, no bank accounts, no live fiat rails. On- and off-ramps are a direction, not a product.',
   },
   {
-    claim: 'Ledger window',
+    claim: 'Ledger',
+    short: 'Snapshot',
     reality:
-      'The proof figures cover a fixed export window and are regenerated weekly, not streamed live.',
+      'The proof figures cover a fixed export window and are regenerated weekly. They are not a live counter.',
   },
 ] as const
 

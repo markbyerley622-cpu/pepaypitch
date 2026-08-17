@@ -12,6 +12,7 @@ import {
   WEBHOOK_EVENTS,
 } from '@/content/site'
 import { Button, Item, Reveal, Section, SectionHead, Stagger } from '@/components/ui'
+import { IntegrationFlow } from '@/components/product/integration-flow'
 import { cn } from '@/lib/utils'
 
 const TABS = [
@@ -132,8 +133,23 @@ export function Developers() {
         </Reveal>
       </div>
 
+      {/* ── and then what ───────────────────────────────────────────────── */}
+      <div className="mt-16 grid gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
+        <div className="min-w-0">
+          <SectionHead
+            size="sub"
+            eyebrow="After the call"
+            title="The rest of the loop"
+            support="The snippet answers how much work this is. This answers the question a developer actually has to plan around — what happens once the payer shows up."
+          />
+        </div>
+        <Reveal delay={0.12} className="min-w-0">
+          <IntegrationFlow />
+        </Reveal>
+      </div>
+
       {/* ── what is handled for you ─────────────────────────────────────── */}
-      <Stagger className="mt-14 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-4" gap={0.07}>
+      <Stagger className="mt-16 grid gap-x-10 gap-y-7 sm:grid-cols-2 lg:grid-cols-4" gap={0.07}>
         {DEVELOPER_POINTS.map((p) => (
           <Item key={p.title}>
             <div className="border-t border-hairline pt-5">

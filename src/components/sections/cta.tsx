@@ -2,6 +2,7 @@ import { ArrowRight, ArrowUpRight } from 'lucide-react'
 import { AUDIENCES, CTA as ACTIONS } from '@/content/site'
 import { Button, Item, Reveal, Section, Stagger, WordReveal } from '@/components/ui'
 import { Aurora, Gridlines } from '@/components/ui/atmosphere'
+import { Converge } from '@/components/product/converge'
 
 /**
  * The close.
@@ -22,6 +23,11 @@ export function Cta() {
         </>
       }
     >
+      {/* Everything the page has shown, put back on one rail before the ask. */}
+      <Reveal duration={1}>
+        <Converge className="mx-auto mb-16 max-w-2xl" />
+      </Reveal>
+
       <div className="mx-auto max-w-3xl text-center">
         <h2 className="pep-display text-[clamp(2.2rem,5vw,3.6rem)] text-ink">
           <WordReveal text="Build with Pepay." />

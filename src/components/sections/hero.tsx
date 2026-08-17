@@ -5,7 +5,7 @@ import { CHAINS, MARKED_TOKENS, TPV, tokenIcon } from '@/content/metrics'
 import { Button, Reveal, Shell, Status, WordReveal } from '@/components/ui'
 import { Aurora, Gridlines } from '@/components/ui/atmosphere'
 import { PaymentDemo } from '@/components/product/payment-demo'
-import { count, usdCompact } from '@/lib/format'
+import { count, shortDate, usdCompact } from '@/lib/format'
 import { Rotator } from './rotator'
 
 /**
@@ -33,13 +33,17 @@ export function Hero() {
             <Reveal>
               <div className="flex flex-wrap items-center gap-2">
                 <Status kind="live" label={`Live on ${CHAINS.length} chains`} />
-                <span className="text-[0.78rem] text-ink-4">
-                  {CHAINS.join(' · ')}
-                </span>
+                <span className="text-[0.78rem] text-ink-4">{CHAINS.join(' · ')}</span>
               </div>
             </Reveal>
 
-            <h1 className="pep-display mt-6 text-[clamp(2.6rem,6.4vw,4.6rem)] text-ink">
+            {/* The category, before the clever line. A reader who has never
+                heard of Pepay needs orienting before the mechanism lands. */}
+            <Reveal delay={0.08}>
+              <p className="pep-eyebrow mt-7 text-accent2">{BRAND.eyebrow}</p>
+            </Reveal>
+
+            <h1 className="pep-display mt-4 text-[clamp(2.8rem,6.8vw,5rem)] text-ink">
               <WordReveal text={line1} />
               <span className="block text-accent2">
                 <WordReveal text={line2} delay={0.18} />
@@ -71,14 +75,20 @@ export function Hero() {
               </div>
             </Reveal>
 
-            {/* Ledger figures, stated small. The proof section does the
-                argument; the hero only establishes that there is one. */}
+            {/* Ledger figures, stated small and dated. The proof section makes
+                the argument; the hero only establishes that there is one — and
+                labels the window so these never read as a live counter. */}
             <Reveal delay={0.6}>
-              <dl className="mt-11 grid max-w-lg grid-cols-3 gap-6 border-t border-hairline pt-7">
-                <Stat value={usdCompact(TPV.totals.volumeUsd)} label="Settled volume" />
-                <Stat value={count(TPV.totals.transactions)} label="Transactions" />
-                <Stat value={count(TPV.totals.uniqueWallets)} label="Paying wallets" />
-              </dl>
+              <div className="mt-11 border-t border-hairline pt-7">
+                <dl className="grid max-w-lg grid-cols-3 gap-6">
+                  <Stat value={usdCompact(TPV.totals.volumeUsd)} label="Settled volume" />
+                  <Stat value={count(TPV.totals.transactions)} label="Transactions" />
+                  <Stat value={count(TPV.totals.uniqueWallets)} label="Paying wallets" />
+                </dl>
+                <p className="pep-mono mt-4 text-[0.7rem] text-ink-4">
+                  Settled ledger · {shortDate(TPV.range.first)} — {shortDate(TPV.range.last)}
+                </p>
+              </div>
             </Reveal>
 
             <Reveal delay={0.68}>

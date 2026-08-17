@@ -46,13 +46,14 @@ export const metadata: Metadata = {
     siteName: BRAND.name,
     title: BRAND.metaTitle,
     description: BRAND.metaDescription,
-    images: [{ url: '/images/reel-product-cover.jpg', width: 1200, height: 630, alt: 'Pepay' }],
+    // The card itself comes from app/opengraph-image.tsx, which composes it
+    // from the same ledger module the page renders — so an unfurl cannot state
+    // a figure the site does not.
   },
   twitter: {
     card: 'summary_large_image',
     title: BRAND.metaTitle,
     description: BRAND.metaDescription,
-    images: ['/images/reel-product-cover.jpg'],
     creator: '@pepaylabs',
   },
   icons: {
