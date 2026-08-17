@@ -1,0 +1,411 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Pepay design tokens.
+
+   Carried over from the merchant dashboard's marketing surface, which is where
+   this language was worked out. Every token is defined in BOTH modes; nothing
+   on the page may hardcode a colour.
+
+   Colours that vary by mode are stored as space-separated RGB channels so
+   Tailwind's `/alpha` modifier works (`bg-surface/70`). Hairlines and glass are
+   stored as finished colours because their alpha is part of the token.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* ── light ─────────────────────────────────────────────────────────────
+       A cool near-white rather than #fff. Pure white leaves cards nothing to
+       sit on, which is what makes a light page read as a template. */
+    --pep-canvas: 250 251 253;
+    --pep-canvas-2: 243 246 251;
+    --pep-surface: 255 255 255;
+    --pep-surface-2: 247 249 252;
+
+    --pep-ink: 9 18 33;
+    --pep-ink-2: 60 76 98;
+    --pep-ink-3: 106 122 143;
+    --pep-ink-4: 146 160 178;
+
+    --pep-accent: 37 99 235;
+    --pep-accent-ink: 255 255 255;
+
+    --pep-line: rgba(10, 22, 40, 0.09);
+    --pep-line-2: rgba(10, 22, 40, 0.15);
+    --pep-glass: rgba(255, 255, 255, 0.72);
+    --pep-glass-line: rgba(255, 255, 255, 0.9);
+
+    /* Elevation. Three steps only — a fourth always ends up being decoration.
+       Tinted with the brand blue rather than neutral black so shadows read as
+       part of the palette instead of as dirt. */
+    --pep-shadow-1: 0 1px 2px rgba(10, 22, 40, 0.05), 0 1px 3px rgba(10, 22, 40, 0.04);
+    --pep-shadow-2: 0 2px 4px rgba(10, 22, 40, 0.04), 0 12px 24px -8px rgba(10, 22, 40, 0.1);
+    --pep-shadow-3: 0 2px 6px rgba(10, 22, 40, 0.05), 0 32px 64px -24px rgba(13, 38, 90, 0.22);
+    --pep-shadow-accent: 0 8px 24px -6px rgba(37, 99, 235, 0.35);
+
+    /* Inner top highlight that gives a card its "lit from above" edge. */
+    --pep-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+    --pep-grid: rgba(10, 22, 40, 0.045);
+
+    color-scheme: light;
+  }
+
+  .dark {
+    /* ── dark ──────────────────────────────────────────────────────────────
+       Blue-black, not grey-black. Panels lift by ~4% rather than by a border
+       alone, which is what keeps layering legible without heavy outlines. */
+    --pep-canvas: 6 9 15;
+    --pep-canvas-2: 9 13 21;
+    --pep-surface: 14 20 30;
+    --pep-surface-2: 18 25 37;
+
+    --pep-ink: 240 245 251;
+    --pep-ink-2: 175 189 207;
+    --pep-ink-3: 124 140 161;
+    --pep-ink-4: 86 100 120;
+
+    --pep-accent: 59 130 246;
+    --pep-accent-ink: 255 255 255;
+
+    --pep-line: rgba(255, 255, 255, 0.08);
+    --pep-line-2: rgba(255, 255, 255, 0.14);
+    --pep-glass: rgba(16, 23, 35, 0.66);
+    --pep-glass-line: rgba(255, 255, 255, 0.08);
+
+    --pep-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --pep-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.55), 0 14px 28px -10px rgba(0, 0, 0, 0.7);
+    --pep-shadow-3: 0 2px 8px rgba(0, 0, 0, 0.6), 0 40px 80px -28px rgba(0, 0, 0, 0.9);
+    --pep-shadow-accent: 0 8px 30px -6px rgba(59, 130, 246, 0.45);
+
+    --pep-bevel: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    --pep-grid: rgba(255, 255, 255, 0.038);
+
+    color-scheme: dark;
+  }
+
+  * {
+    border-color: var(--pep-line);
+  }
+
+  html {
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    min-height: 100svh;
+    width: 100%;
+    background: rgb(var(--pep-canvas));
+    color: rgb(var(--pep-ink));
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+  }
+
+  ::selection {
+    background: rgb(var(--pep-accent));
+    color: rgb(var(--pep-accent-ink));
+  }
+
+  /* One visible focus treatment across the whole site. Anything that can be
+     reached by keyboard gets this ring — it is never removed for looks. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--pep-accent));
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Prevent focus zoom on mobile */
+  @media screen and (max-width: 767px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px;
+    }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Presentation vocabulary.
+
+   Each of these exists because it is used in three or more places — anything
+   used once stays inline in the component that needs it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* ── type ──────────────────────────────────────────────────────────────── */
+
+  /* Display type. Tight tracking is the single biggest lever between "keynote"
+     and "template". Line-height sits just under 1 — below that, descenders on
+     y/g/p clip against the line box. Weight 700 rather than 600: at display
+     sizes the heavier cut reads as confident, and the tighter tracking
+     compensates for the closed-up counters. */
+  .pep-display {
+    letter-spacing: -0.042em;
+    line-height: 1.02;
+    font-weight: 700;
+    text-wrap: balance;
+    padding-bottom: 0.04em;
+  }
+
+  .pep-eyebrow {
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    font-weight: 700;
+  }
+
+  /* Tabular figures. Mandatory on anything that animates or updates, otherwise
+     the number visibly jitters as glyph widths change. */
+  .pep-num {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    font-feature-settings: 'tnum' 1, 'ss01' 1;
+  }
+
+  .pep-mono {
+    font-family: var(--font-mono), 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    font-variant-ligatures: none;
+  }
+
+  .pep-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Vertical fade on large display numerals. Very subtle — enough to stop a
+     huge figure from reading as a flat block of colour. */
+  .pep-text-fade {
+    background: linear-gradient(180deg, rgb(var(--pep-ink)) 30%, rgb(var(--pep-ink) / 0.68) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* ── surfaces ──────────────────────────────────────────────────────────── */
+
+  .pep-card {
+    background: rgb(var(--pep-surface));
+    border: 1px solid var(--pep-line);
+    box-shadow: var(--pep-shadow-1);
+  }
+
+  .pep-card-2 {
+    background: rgb(var(--pep-surface));
+    border: 1px solid var(--pep-line);
+    box-shadow: var(--pep-bevel), var(--pep-shadow-2);
+  }
+
+  .pep-card-3 {
+    background: rgb(var(--pep-surface));
+    border: 1px solid var(--pep-line);
+    box-shadow: var(--pep-bevel), var(--pep-shadow-3);
+  }
+
+  .pep-glass {
+    background: var(--pep-glass);
+    border: 1px solid var(--pep-glass-line);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    box-shadow: var(--pep-bevel), var(--pep-shadow-2);
+  }
+
+  /* Specular sheen across the top of a glass panel. Applied to a ::before by
+     the GlassCard primitive so it sits above the blur but below content. */
+  .pep-sheen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      145deg,
+      rgb(255 255 255 / 0.16) 0%,
+      rgb(255 255 255 / 0.03) 34%,
+      transparent 62%
+    );
+  }
+
+  /* ── backdrops ─────────────────────────────────────────────────────────── */
+
+  /* Engineering graph paper. Reads as precision rather than as decoration,
+     which is why it is a grid and not a gradient. */
+  .pep-gridlines {
+    background-image:
+      linear-gradient(to right, var(--pep-grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--pep-grid) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .pep-mask-radial {
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  .pep-mask-b {
+    mask-image: linear-gradient(180deg, black 0%, black 68%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, black 0%, black 68%, transparent 100%);
+  }
+
+  .pep-mask-x {
+    mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+
+  .pep-rule {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--pep-line-2) 15%,
+      var(--pep-line-2) 85%,
+      transparent
+    );
+  }
+
+  /* Promote animated layers so motion runs at display refresh rate instead of
+     repainting the section every frame. */
+  .pep-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ── keyframes ──────────────────────────────────────────────────────────── */
+
+/* A settlement landing. Used one at a time, never as a field. */
+@keyframes pep-pulse-ring {
+  0% {
+    transform: scale(0.55);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Dashed value-flow connector. */
+@keyframes pep-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: -22;
+  }
+}
+
+/* Frog idle, carried over from the product so the character moves the same way
+   here as it does inside Pepay Streams. */
+@keyframes pep-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pep-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+/* Aurora drift. Different periods and paths so the composite never visibly
+   loops — translate/scale only, so it stays on the compositor. */
+@keyframes pep-aurora-1 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, 8%, 0) scale(1.15);
+  }
+}
+
+@keyframes pep-aurora-2 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  50% {
+    transform: translate3d(-8%, 5%, 0) scale(0.94);
+  }
+}
+
+@keyframes pep-aurora-3 {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+  }
+  50% {
+    transform: translate3d(5%, -7%, 0) scale(1.12);
+  }
+}
+
+/* Idle drift for product art. Transform only — never background-position,
+   which would repaint the element on every frame. */
+@keyframes pep-kenburns {
+  0%,
+  100% {
+    transform: scale(1.1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.16) translate3d(-1.4%, -1.2%, 0);
+  }
+}
+
+@keyframes pep-caret {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes pep-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Reduced motion is honoured globally rather than per component, so a new
+   section cannot forget to opt in. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
