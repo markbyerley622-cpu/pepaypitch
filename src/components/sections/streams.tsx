@@ -61,7 +61,11 @@ export function Streams() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.35, ease: EASE }}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  // contain, not cover: these are screen recordings of a real
+                  // interface, and cropping them to fill a 16:10 box cuts the
+                  // navigation and the left column off the very product the
+                  // section is there to show.
+                  className="absolute inset-0 h-full w-full object-contain"
                 />
               </AnimatePresence>
             </div>

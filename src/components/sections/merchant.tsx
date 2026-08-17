@@ -60,8 +60,12 @@ export function Merchant() {
                 src="/images/reel-product.mp4"
                 srcSm="/images/reel-product-sm.mp4"
                 poster="/images/reel-product-cover.jpg"
-                label="A recording of the Pepay merchant dashboard: payments, invoices and settlement."
-                className="absolute inset-0"
+                // Described as what it is. This asset is Pepay's product reel,
+                // which opens on a title card before showing the surface — not
+                // an unbroken screen capture of the dashboard, and the label
+                // should not imply otherwise.
+                label="Pepay product reel: the merchant surface, settlement and multi-chain payments."
+                className="absolute inset-0 object-contain"
               />
             </div>
           </div>
